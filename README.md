@@ -1,16 +1,45 @@
-# weather_app
+# Weather app
 
-A new Flutter project.
+Данное приложение использует OpenWeatherMap API для получения данных о погоде.
 
-## Getting Started
+## Краткий обзор на проделанную работу
 
-This project is a starting point for a Flutter application.
+Ключевой функционал заключается в выводе погоды в настоящий момент, используя геолокацию пользователя (используется geolocator). Для вывода местоположения был использован Geocoding.
+Под основным виджетом с информацией о погоде реализована горизонтальная карусель, содержащая в себе почасовой прогноз на ближайшие 6 часов.
+Ниже представлен список из прогноза на неделю. Для получения всех данных были использованы запросы к API и различные обработчики для каждого типа данных.
 
-A few resources to get you started if this is your first Flutter project:
+<p align="center">
+<img src="https://i.postimg.cc/MGWv0CmK/1.jpg" height="400" />
+</p>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+<p align="center">
+<img src="https://i.postimg.cc/wB03www5/2.jpg" height="400" />
+</p>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<p align="center">
+<img src="https://i.postimg.cc/XXSvrmvW/4.jpg" height="400" />
+</p>
+
+Помимо основного функционала приложение позволяет узнать погоду в конкретном городе. По поиску выводится несколько возможных вариантов, выбирая один из которых пользователь может увидеть данные.
+В случае отсутствия заданного пользователем запроса выводится SnackBar с предупреждением об отсутствии данных.
+
+<p align="center">
+<img src="https://i.postimg.cc/W3zzC0yB/3.jpg" height="400" />
+</p>
+
+При отсутствии интернет-соединения приложение подгружает ранее полученные данные о погоде, сообщая пользователю о том, насколько давно они были получены. Хранение данных было организовано с помощью shared preferences.
+
+<p align="center">
+<img src="https://i.postimg.cc/wvrMp787/5.jpg" height="400" />
+</p>
+
+В приложении также доступна локализация (русский и английский языки). В случае английской локализации используются имперские единицы измерения и весь интерфейс переведен на английский соответственно.
+
+<p align="center">
+<img src="https://i.postimg.cc/5yF0Nbbp/6.jpg" height="400" />
+</p>
+
+Что можно было бы улучшить:
+- расширить обработку исключений и ошибок;
+- расширить функционал;
+- архитектуру кода.
