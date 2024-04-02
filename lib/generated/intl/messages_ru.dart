@@ -48,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "nov": MessageLookupByLibrary.simpleMessage("Ноя"),
         "oct": MessageLookupByLibrary.simpleMessage("Окт"),
         "search": MessageLookupByLibrary.simpleMessage("Поиск"),
+        "search_result_null": MessageLookupByLibrary.simpleMessage(
+            "Ничего не найдено по запросу"),
         "sep": MessageLookupByLibrary.simpleMessage("Сен"),
         "temp_units": MessageLookupByLibrary.simpleMessage("C"),
         "units": MessageLookupByLibrary.simpleMessage("metric"),

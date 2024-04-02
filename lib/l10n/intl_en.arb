@@ -23,5 +23,6 @@
     "nov": "Nov",
     "dec": "Dec",
     "location_permission_denied" : "Location permission denied",
-    "location_permission_denied_content" : "Please enable location access in the settings."
+    "location_permission_denied_content" : "Please enable location access in the settings.",
+    "search_result_null" : "No results found for"
 }

@@ -48,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "nov": MessageLookupByLibrary.simpleMessage("Nov"),
         "oct": MessageLookupByLibrary.simpleMessage("Oct"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
+        "search_result_null":
+            MessageLookupByLibrary.simpleMessage("No results found for"),
         "sep": MessageLookupByLibrary.simpleMessage("Sep"),
         "temp_units": MessageLookupByLibrary.simpleMessage("F"),
         "units": MessageLookupByLibrary.simpleMessage("imperial"),

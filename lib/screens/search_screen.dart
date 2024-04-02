@@ -33,6 +33,13 @@ class _SearchScreenState extends State<SearchScreen> {
         _searchResults.clear();
         _searchResults.addAll(results);
       });
+      if (_searchResults.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${S.current.search_result_null} $cityName'),
+          ),
+        );
+      }
     } catch (e) {
       print('Error searching city: $e');
     }
@@ -81,7 +88,6 @@ class _SearchScreenState extends State<SearchScreen> {
                       );
                     } catch (e) {
                       print('Error fetching weather data: $e');
-                      // Здесь можно добавить обработку ошибок, например, отображение диалога с сообщением об ошибке
                     }
                   },
                 );

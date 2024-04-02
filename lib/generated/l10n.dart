@@ -299,6 +299,16 @@ class S {
       args: [],
     );
   }
+
+  /// `No results found for`
+  String get search_result_null {
+    return Intl.message(
+      'No results found for',
+      name: 'search_result_null',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -51,18 +51,14 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        print("there is connection yahoo");
         return true;
       }
     } on SocketException catch (_) {
-      print("connection error occured:");
-      print(_);
       _checkInternet = false;
       return false;
     }
     _checkInternet = false;
 
-    print("no connection oops");
     return false;
   }
 
@@ -80,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
       if (hasInternet) {
         _locationService.getLocation().then((Position position) {
           setState(() {
-            // _currentPosition = position;
             _getAddressFromPosition(position);
             _getCurrentWeather(position.latitude, position.longitude);
             _getHourlyForecast(position.latitude, position.longitude);
@@ -98,7 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
   _loadCachedData() {
     WeatherCacheService.getCachedWeatherData().then((cachedWeather) {
       if (cachedWeather != null) {
-        print("cached weather is not null");
         setState(() {
           _currentWeather = cachedWeather;
           _currentCity = cachedWeather.name;
