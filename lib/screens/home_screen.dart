@@ -51,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        _checkInternet = true;
         return true;
       }
     } on SocketException catch (_) {
@@ -270,15 +271,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        actions: const <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 8),
-            child: Icon(
-              Icons.settings_outlined,
-              color: Colors.black,
-            ),
-          ),
-        ],
       ),
       body: RefreshIndicator(
         onRefresh: refreshData,

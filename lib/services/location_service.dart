@@ -16,7 +16,7 @@ class LocationService {
 
       Placemark place = placemarks[0];
 
-      return "${place.locality}, ${place.subLocality}, ${place.country}";
+      return "${place.locality}, ${place.subLocality}";
     } catch (e) {
       print(e);
       return "none";
