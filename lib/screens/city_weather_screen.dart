@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app/data/weather_data.dart';
+import 'package:weather_app/generated/l10n.dart';
 
 class CityWeatherScreen extends StatefulWidget {
   final WeatherData weatherData;
 
-  CityWeatherScreen(this.weatherData);
+  const CityWeatherScreen(this.weatherData, {super.key});
 
   @override
   _CityWeatherScreenState createState() => _CityWeatherScreenState();
@@ -25,7 +26,7 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            _weatherData.name), // Используем название города из WeatherData
+            _weatherData.name),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -38,18 +39,18 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               Text(
-                '${_weatherData.main.temp.toStringAsFixed(0)}°C',
-                style: TextStyle(
+                '${_weatherData.main.temp.toStringAsFixed(0)}°${S.of(context).temp_units}',
+                style: const TextStyle(
                   fontSize: 80,
                   fontWeight: FontWeight.w200,
                 ),
               ),
               _buildWeatherIcon(_weatherData.weather[0].icon),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
-                  'Ощущается как: ${_weatherData.main.feelsLike.toStringAsFixed(0)}°C'),
+                  '${S.of(context).feels_like}${_weatherData.main.feelsLike.toStringAsFixed(0)}°${S.of(context).temp_units}'),
             ],
           ),
         ),
@@ -70,6 +71,6 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
     String formattedTime = '';
     dateTime = DateTime.fromMillisecondsSinceEpoch(_weatherData.dt * 1000);
     formattedTime = DateFormat('HH:mm').format(dateTime);
-      return Text('Обновлено: $formattedTime');
+      return Text('${S.of(context).updated}: $formattedTime');
   }
 }

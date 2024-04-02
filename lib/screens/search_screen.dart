@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/data/search_city_data.dart';
 import 'package:weather_app/data/weather_data.dart';
+import 'package:weather_app/generated/l10n.dart';
 import 'package:weather_app/screens/city_weather_screen.dart';
 import 'package:weather_app/services/city_weather_service.dart';
 import 'package:weather_app/services/search_city_service.dart';
@@ -14,8 +15,8 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   late final SearchCityService _searchCityService;
-  TextEditingController _searchController = TextEditingController();
-  List<SearchCityData> _searchResults = [];
+  final TextEditingController _searchController = TextEditingController();
+  final List<SearchCityData> _searchResults = [];
 
   @override
   void initState() {
@@ -41,7 +42,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Поиск'),
+        title: Text(S.current.search),
       ),
       body: Column(
         children: [
@@ -50,9 +51,9 @@ class _SearchScreenState extends State<SearchScreen> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                labelText: 'Введите название города',
+                labelText: S.current.enter_city_name,
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                   onPressed: _searchCity,
                 ),
               ),

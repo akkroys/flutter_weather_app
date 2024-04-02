@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/data/forecast_daily_data.dart' as daily;
 import 'package:weather_app/data/weather_data.dart';
 import 'package:weather_app/data/forecast_hourly_data.dart';
+import 'package:weather_app/generated/l10n.dart';
 import 'package:weather_app/screens/search_screen.dart';
 import 'package:weather_app/services/cache/forecast_daily_cache_service.dart';
 import 'package:weather_app/services/cache/forecast_hourly_cache_service.dart';
@@ -29,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late final WeatherService _weatherService;
   late final ForecastHourlyService _forecastHourlyService;
   late final ForecastDailyService _forecastDailyService;
-  // Position? _currentPosition;
   String? _currentCity;
   WeatherData? _currentWeather;
   ForecastHourlyData? forecastHourlyData;
@@ -106,13 +106,12 @@ class _HomeScreenState extends State<HomeScreen> {
               DateTime.fromMillisecondsSinceEpoch(cachedWeather.dt * 1000);
           Duration difference = DateTime.now().difference(lastUpdatedTime);
           if (difference.inDays > 1) {
-            lastUpdatedMessage = '> 1 дн';
-          } else if (difference.inHours > 23) {
-            lastUpdatedMessage = '${difference.inHours} ч';
+            lastUpdatedMessage = '> 1 ${S.of(context).days}';
           } else if (difference.inMinutes > 59) {
-            lastUpdatedMessage = '> 59min';
+            lastUpdatedMessage = '${difference.inHours} ${S.of(context).hours}';
           } else {
-            lastUpdatedMessage = '${difference.inMinutes} мин';
+            lastUpdatedMessage =
+                '${difference.inMinutes} ${S.of(context).minutes}';
           }
         });
       }
@@ -153,11 +152,11 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Location Permission Denied'),
-            content: Text('Please enable location access in the settings.'),
+            title: Text(S.current.location_permission_denied),
+            content: Text(S.current.location_permission_denied_content),
             actions: <Widget>[
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -226,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           )
-        : CircularProgressIndicator();
+        : const CircularProgressIndicator();
   }
 
   @override
@@ -253,11 +252,11 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.search,
                 color: Colors.black,
               ),
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               Expanded(
                 child: _currentCity != null
                     ? Text(
@@ -265,20 +264,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         overflow: TextOverflow.ellipsis,
                         softWrap: false,
                         maxLines: 1,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w500),
                       )
-                    : ColorChangingContainer(height: 20),
-                // Container(
-                //     padding: const EdgeInsets.symmetric(vertical: 10),
-                //     width: 10,
-                //     height: 20,
-                //     decoration: BoxDecoration(
-                //         color: Colors.grey[300],
-                //         borderRadius: BorderRadius.circular(10)),
-                //   ),
+                    : const ColorChangingContainer(height: 20),
               ),
-              Icon(
+              const Icon(
                 Icons.location_on_outlined,
                 color: Colors.black,
               ),
@@ -306,8 +297,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'Отсутствует соединение с интернетом. Последнее обновление: $lastUpdatedMessage',
-                      style: TextStyle(
+                      '${S.of(context).internet_connection_error} $lastUpdatedMessage',
+                      style: const TextStyle(
                         fontSize: 13,
                         color: Colors.red,
                       ),
@@ -324,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 _weatherIcon(),
-                                SizedBox(
+                                const SizedBox(
                                   width: 5,
                                 ),
                                 Text(capitalizeFirstLetter(
@@ -337,14 +328,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   color: Colors.grey[500], fontSize: 10),
                             ),
                             Text(
-                              '${_currentWeather?.main.temp.toStringAsFixed((0)) ?? ""}°C',
-                              style: TextStyle(
+                              '${_currentWeather?.main.temp.toStringAsFixed((0)) ?? ""}°${S.of(context).temp_units}',
+                              style: const TextStyle(
                                 fontSize: 70,
                                 fontWeight: FontWeight.w200,
                               ),
                             ),
                             Text(
-                              'Ощущается как ${_currentWeather?.main.feelsLike.toStringAsFixed((0)) ?? ""}°C',
+                              '${S.of(context).feels_like} ${_currentWeather?.main.feelsLike.toStringAsFixed((0)) ?? ""}°${S.of(context).temp_units}',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey[500],
@@ -353,16 +344,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       )
-                    : ColorChangingContainer(height: 210),
-                // Container(
-                //     margin: EdgeInsets.all(15),
-                //     padding: const EdgeInsets.symmetric(vertical: 10),
-                //     height: 210,
-                //     decoration: BoxDecoration(
-                //         color: Colors.grey[300],
-                //         borderRadius: BorderRadius.circular(20)),
-                //   ),
-                SizedBox(height: 10),
+                    : const ColorChangingContainer(height: 210),
+                const SizedBox(height: 10),
                 forecastHourlyData != null
                     ? Container(
                         height: 100,
@@ -410,16 +393,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                           },
                         ))
-                    : ColorChangingContainer(height: 100),
-                // Container(
-                //     margin: EdgeInsets.all(15),
-                //     padding: const EdgeInsets.symmetric(vertical: 10),
-                //     height: 100,
-                //     decoration: BoxDecoration(
-                //         color: Colors.grey[300],
-                //         borderRadius: BorderRadius.circular(20)),
-                //   ),
-                SizedBox(height: 10),
+                    : const ColorChangingContainer(height: 100),
+                const SizedBox(height: 10),
                 forecastDailyData != null
                     ? SizedBox(
                         height: 420,
@@ -434,18 +409,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                             final monthNames = [
                               '',
-                              'Янв',
-                              'Фев',
-                              'Мар',
-                              'Апр',
-                              'Май',
-                              'Июнь',
-                              'Июль',
-                              'Авг',
-                              'Сен',
-                              'Окт',
-                              'Ноя',
-                              'Дек',
+                              (S.of(context).jan),
+                              (S.of(context).feb),
+                              (S.of(context).mar),
+                              (S.of(context).apr),
+                              (S.of(context).may),
+                              (S.of(context).jun),
+                              (S.of(context).jul),
+                              (S.of(context).aug),
+                              (S.of(context).sep),
+                              (S.of(context).oct),
+                              (S.of(context).nov),
+                              (S.of(context).dec),
                             ];
                             return DailyForecastCard(
                               date:
@@ -457,15 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         ),
                       )
-                    : ColorChangingContainer(height: 400),
-                // Container(
-                //     margin: EdgeInsets.all(15),
-                //     padding: const EdgeInsets.symmetric(vertical: 10),
-                //     height: 500,
-                //     decoration: BoxDecoration(
-                //         color: Colors.grey[300],
-                //         borderRadius: BorderRadius.circular(20)),
-                //   ),
+                    : const ColorChangingContainer(height: 400),
               ],
             ),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/generated/l10n.dart';
 
 class HourlyForecastCard extends StatelessWidget {
   final String time;
@@ -29,7 +30,7 @@ class HourlyForecastCard extends StatelessWidget {
           ),
           SizedBox(height: 5),
           Text(
-            '$temperature°C',
+            '$temperature°${S.current.temp_units}',
             style: TextStyle(fontSize: 12),
           ),
         ],

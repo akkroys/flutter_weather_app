@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/generated/l10n.dart';
 
 class DailyForecastCard extends StatelessWidget {
   final String date;
@@ -29,7 +30,7 @@ class DailyForecastCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                '${maxTemperature.toInt()}°C / ${minTemperature.toInt()}°C',
+                '${maxTemperature.toInt()}°${S.current.temp_units} / ${minTemperature.toInt()}°${S.current.temp_units}',
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(width: 10),
