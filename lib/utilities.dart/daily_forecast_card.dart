@@ -33,10 +33,9 @@ class DailyForecastCard extends StatelessWidget {
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(width: 10),
-              Image.network(
-                "http://openweathermap.org/img/wn/$iconCode.png",
-                width: 30,
-                height: 30,
+              ImageIcon(
+                AssetImage("assets/weather_icons/$iconCode.png"),
+                size: 30,
               ),
             ],
           ),

@@ -68,10 +68,8 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
   Widget _buildUpdateTime() {
     DateTime? dateTime;
     String formattedTime = '';
-    if (_weatherData != null) {
-      dateTime = DateTime.fromMillisecondsSinceEpoch(_weatherData.dt * 1000);
-      formattedTime = DateFormat('HH:mm').format(dateTime);
-    }
-    return Text('Обновлено: $formattedTime');
+    dateTime = DateTime.fromMillisecondsSinceEpoch(_weatherData.dt * 1000);
+    formattedTime = DateFormat('HH:mm').format(dateTime);
+      return Text('Обновлено: $formattedTime');
   }
 }

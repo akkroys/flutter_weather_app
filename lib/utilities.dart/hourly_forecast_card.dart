@@ -23,10 +23,9 @@ class HourlyForecastCard extends StatelessWidget {
             style: TextStyle(fontSize: 10),
           ),
           SizedBox(height: 5),
-          Image.network(
-            "http://openweathermap.org/img/wn/$iconCode.png",
-            width: 30,
-            height: 30,
+          ImageIcon(
+            AssetImage("assets/weather_icons/$iconCode.png"),
+            size: 30,
           ),
           SizedBox(height: 5),
           Text(

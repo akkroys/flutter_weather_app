@@ -1,10 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/data/forecast_daily_data.dart' as daily;
-// import 'package:weather/weather.dart';
 import 'package:weather_app/data/weather_data.dart';
 import 'package:weather_app/data/forecast_hourly_data.dart';
 import 'package:weather_app/screens/search_screen.dart';
+import 'package:weather_app/services/cache/forecast_daily_cache_service.dart';
+import 'package:weather_app/services/cache/forecast_hourly_cache_service.dart';
+import 'package:weather_app/services/cache/weather_cache_service.dart';
 import 'package:weather_app/services/forecast_daily_service.dart';
 import 'package:weather_app/services/forecast_hourly_service.dart';
 import 'package:weather_app/services/location_service.dart';
@@ -31,6 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
   WeatherData? _currentWeather;
   ForecastHourlyData? forecastHourlyData;
   daily.ForecastDailyData? forecastDailyData;
+  String lastUpdatedMessage = '';
+  bool _checkInternet = true;
 
   @override
   void initState() {
@@ -40,6 +45,25 @@ class _HomeScreenState extends State<HomeScreen> {
     _forecastHourlyService = ForecastHourlyService(_locationService);
     _forecastDailyService = ForecastDailyService(_locationService);
     _checkLocationPermission();
+  }
+
+  Future<bool> _checkInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print("there is connection yahoo");
+        return true;
+      }
+    } on SocketException catch (_) {
+      print("connection error occured:");
+      print(_);
+      _checkInternet = false;
+      return false;
+    }
+    _checkInternet = false;
+
+    print("no connection oops");
+    return false;
   }
 
   _checkLocationPermission() async {
@@ -52,16 +76,64 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _getCurrentLocation() {
-    _locationService.getLocation().then((Position position) {
-      setState(() {
-        // _currentPosition = position;
-        _getAddressFromPosition(position);
-        _getCurrentWeather(position.latitude, position.longitude);
-        _getHourlyForecast(position.latitude, position.longitude);
-        _getDailyForecast(position.latitude, position.longitude);
-      });
-    }).catchError((error) {
-      print(error);
+    _checkInternetConnection().then((hasInternet) {
+      if (hasInternet) {
+        _locationService.getLocation().then((Position position) {
+          setState(() {
+            // _currentPosition = position;
+            _getAddressFromPosition(position);
+            _getCurrentWeather(position.latitude, position.longitude);
+            _getHourlyForecast(position.latitude, position.longitude);
+            _getDailyForecast(position.latitude, position.longitude);
+          });
+        }).catchError((error) {
+          print(error);
+        });
+      } else {
+        _loadCachedData();
+      }
+    });
+  }
+
+  _loadCachedData() {
+    WeatherCacheService.getCachedWeatherData().then((cachedWeather) {
+      if (cachedWeather != null) {
+        print("cached weather is not null");
+        setState(() {
+          _currentWeather = cachedWeather;
+          _currentCity = cachedWeather.name;
+          DateTime lastUpdatedTime =
+              DateTime.fromMillisecondsSinceEpoch(cachedWeather.dt * 1000);
+          Duration difference = DateTime.now().difference(lastUpdatedTime);
+          if (difference.inDays > 1) {
+            lastUpdatedMessage = '> 1 дн';
+          } else if (difference.inHours > 23) {
+            lastUpdatedMessage = '${difference.inHours} ч';
+          } else if (difference.inMinutes > 59) {
+            lastUpdatedMessage = '> 59min';
+          } else {
+            lastUpdatedMessage = '${difference.inMinutes} мин';
+          }
+        });
+      }
+    });
+
+    ForecastHourlyCacheService.getCachedHourlyForecastData()
+        .then((cachedForecast) {
+      if (cachedForecast != null) {
+        setState(() {
+          forecastHourlyData = cachedForecast;
+        });
+      }
+    });
+
+    ForecastDailyCacheService.getCachedDailyForecastData()
+        .then((cachedForecast) {
+      if (cachedForecast != null) {
+        setState(() {
+          forecastDailyData = cachedForecast;
+        });
+      }
     });
   }
 
@@ -102,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _currentWeather = weather;
       });
+      WeatherCacheService.cacheWeatherData(weather);
     }).catchError((error) {
       print(error);
     });
@@ -112,6 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         forecastHourlyData = weather;
       });
+      ForecastHourlyCacheService.cacheHourlyForecastData(weather);
     }).catchError((error) {
       print(error);
     });
@@ -122,6 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         forecastDailyData = weather;
       });
+      ForecastDailyCacheService.cacheDailyForecastData(weather);
     }).catchError((error) {
       print(error);
     });
@@ -145,12 +220,13 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 30,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(
-                    "http://openweathermap.org/img/wn/${_currentWeather!.weather[0].icon}.png"),
+                image: AssetImage(
+                  "assets/weather_icons/${_currentWeather!.weather[0].icon}.png",
+                ),
               ),
             ),
           )
-        : CircularProgressIndicator(); // Индикатор загрузки
+        : CircularProgressIndicator();
   }
 
   @override
@@ -162,6 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
           DateTime.fromMillisecondsSinceEpoch(_currentWeather!.dt * 1000);
       formattedTime = DateFormat('HH:mm').format(dateTime);
     }
+
     return Scaffold(
       appBar: AppBar(
         title: GestureDetector(
@@ -225,6 +302,17 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 10),
+                if (!_checkInternet)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Отсутствует соединение с интернетом. Последнее обновление: $lastUpdatedMessage',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
                 _currentWeather != null
                     ? Container(
                         padding: const EdgeInsets.symmetric(vertical: 10),
